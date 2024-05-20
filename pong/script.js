@@ -26,8 +26,21 @@ function draw()
     ctx.fillRect(paddle_offset,left_paddle_top,paddle_width,paddle_height);
 
     ctx.fillRect((width - paddle_offset - paddle_width),right_paddle_top,paddle_width,paddle_height);
+
+
+
+//draw score 
+ctx.font = "30px monospace"; 
+ctx.textAlign = "left"; 
+ctx.fillText(leftScore.toString(), 100, 50); 
+ctx.textAlign = "right"; 
+ctx.fillText(rightScore.toString(), width - 100, 50); 
+
+
 }
 
+var leftScore = 0;
+var rightScore = 0;
 
 
 // -------BALL-----------
@@ -49,8 +62,12 @@ function update_ball()
     ball_move.y += y_speed;
 }
 
+
+
 function check_collide()
 {
+
+    
 // (Local) ball object to track the sides of the ball
     var ball = {
         left: ball_move.x,
@@ -85,14 +102,55 @@ function check_collide()
     if(ball.top < 0 || ball.bottom > height)
     {
 // reverse the travel direction
-        y_speed = -y_speed
+
+    y_speed = -y_speed
     }
 
+if(ball.left < 0){
+    rightScore++
+}
+if(ball.right > width){
+    leftScore++
+}
 
-    check_paddle_collide(ball, left_paddle);
-    check_paddle_collide(ball, right_paddle);    
+
+
+    if (check_paddle_collide(ball, left_paddle)){
+        let distanceFromTop = ball.top - left_paddle_top;
+        let distanceFromBottom = left_paddle.bottom - ball.bottom;
+        adjustAngle(distanceFromTop, distanceFromBottom);
+        
+    };
+
+
+    if (check_paddle_collide(ball, right_paddle)){
+        let distanceFromTop = ball.top - right_paddle_top;
+        let distanceFromBottom = right_paddle.bottom - ball.bottom;
+        adjustAngle(distanceFromTop, distanceFromBottom);
+    };    
+
 
 }
+
+//gameplay
+
+
+
+
+//check to see if the ball collides with the edges of the canvas
+function adjustAngle(distanceFromTop, distanceFromBottom){
+    if (distanceFromTop < 0){
+        //if ball hits near top of paddle, reduce ySpeed
+        y_speed -= 0.5;
+    } else if (distanceFromBottom < 0){
+        //if ball hits near bottom of paddle, increase ySpeed
+        y_speed += 0.5
+    }
+}
+
+
+
+
         function check_paddle_collide(chk_ball, chk_paddle){
             
             if(chk_ball.left < chk_paddle.right &&
