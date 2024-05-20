@@ -1,4 +1,3 @@
-//html elements
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
@@ -23,20 +22,23 @@ function draw()
 
 // --draw paddle--
 // draw left paddle
+ctx.fillStyle = "green";
     ctx.fillRect(paddle_offset,left_paddle_top,paddle_width,paddle_height);
 
+    ctx.fillStyle = "red";
     ctx.fillRect((width - paddle_offset - paddle_width),right_paddle_top,paddle_width,paddle_height);
 
 
 
 //draw score 
+ctx.fillStyle = "white";
 ctx.font = "30px monospace"; 
 ctx.textAlign = "left"; 
+
 ctx.fillText(leftScore.toString(), 100, 50); 
 ctx.textAlign = "right"; 
+
 ctx.fillText(rightScore.toString(), width - 100, 50); 
-
-
 }
 
 var leftScore = 0;
