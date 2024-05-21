@@ -1,3 +1,4 @@
+//html elements
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
@@ -45,16 +46,31 @@ var leftScore = 0;
 var rightScore = 0;
 
 
+//draw game over
+
+if(game_over){
+ctx.fillStyle = "white";
+ctx.font = "3px monospace";
+ctx.textAlign = "center";
+ctx.fillText("GAME OVER", width / 2, height / 2);
+}
+
 // -------BALL-----------
 // (global) dictate the ball size
 const ball_size = 10;
 // (global) dictates starting position of the ball
-var ball_move = { x:20 , y:30 }
+var ball_move = { x:70 , y:30 }
 
 // (global) horizontal nand vertical rate of change
 var x_speed = 5;
 var y_speed = 3;
 
+//start bawl
+function init_ball(){
+    ball_move = {x:10 , y:40};
+    x_speed = 5;
+    y_speed = 3;
+}
 
 
 //update the ball's current xy
@@ -62,6 +78,7 @@ function update_ball()
 {
     ball_move.x += x_speed;
     ball_move.y += y_speed;
+    track_ball();
 }
 
 
@@ -98,8 +115,13 @@ function check_collide()
     if(ball.left < 0 || ball.right > width)
     {
 // reverse the travel direction
-        x_speed = -x_speed
+        init_ball();
     };
+
+if(leftScore == 10 || rightScore == 10){
+    game_over = true;
+}
+
 // if the ball hits the top/ bottom side of the canvas
     if(ball.top < 0 || ball.bottom > height)
     {
@@ -121,6 +143,7 @@ if(ball.right > width){
         let distanceFromTop = ball.top - left_paddle_top;
         let distanceFromBottom = left_paddle.bottom - ball.bottom;
         adjustAngle(distanceFromTop, distanceFromBottom);
+        x_speed = Math.abs(x_speed);
         
     };
 
@@ -129,6 +152,7 @@ if(ball.right > width){
         let distanceFromTop = ball.top - right_paddle_top;
         let distanceFromBottom = right_paddle.bottom - ball.bottom;
         adjustAngle(distanceFromTop, distanceFromBottom);
+        y_speed = Math.abs(y_speed);
     };    
 
 
@@ -179,6 +203,28 @@ const paddle_offset = 10;
 var left_paddle_top = 30;
 var right_paddle_top = 30;
 
+var paddle_speed = 3;
+
+function track_ball(){
+    //create condsensed ball that is only the top and bottom
+    var ball ={
+        top: ball_move.y,
+        bottom: ball_move.y + ball_size,
+    };
+//create condsensed paddle that is only the top and bottom
+    var left_paddle = {
+        top: left_paddle_top,
+        bottom: left_paddle_top + paddle_height
+    }
+
+    if (ball.top < left_paddle.top){
+        left_paddle_top -= paddle_speed;
+    }
+
+    if (ball.bottom > left_paddle.bottom){
+        left_paddle_top += paddle_speed;
+    }
+}
 
 // gameplay
 document.addEventListener("mousemove", (event) =>{
@@ -195,7 +241,9 @@ function game_loop()
     update_ball();
     check_collide();
     setTimeout(game_loop, 30);
-    check_paddle_collide
+    check_paddle_collide;
+    init_ball;
+    track_ball;
 };
 
 // call main loop to start the game
